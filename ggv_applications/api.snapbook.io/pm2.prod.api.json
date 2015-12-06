@@ -1,0 +1,18 @@
+{
+    "apps": [
+        {
+            "name" : "api.snapbook.io",
+            "script" : "server/api.js",
+            "exec_mode" : "cluster_mode",
+            "instances" : 1,
+            "watch" : false,
+            "env": {
+                "NODE_ENV": "production"
+            },
+            "error_file" : "/vagrant/logs/api.snapbook.io.errors",
+            "out_file" : "/vagrant/logs/api.snapbook.io.logs",
+            "merge_logs" : true,
+            "log_date_format" : "YYYY-MM-DD HH:mm Z"
+        }
+    ]
+}

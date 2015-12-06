@@ -1,0 +1,38 @@
+{
+  "name": "ggv-opencv",
+  "version": "1.0.1",
+  "main": "index.js",
+  "description": "Interface opencv pour nodeJS",
+  "homepage": "https://github.com/sn4pbook/ggv_modules",
+  "bugs": "https://github.com/sn4pbook/ggv_modules/issues",
+  "author": {
+    "name": "Gilles Perreymond",
+    "email": "gperreymond@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sn4pbook/ggv_modules"
+  },
+  "license": "",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "team-ggv ffi-opencv",
+    "node ffi opencv"
+  ],
+  "devDependencies": {},
+  "scripts": {},
+  "bin": {},
+  "preferGlobal": "true",
+  "dependencies": {
+    "async": "1.4.0",
+    "fs-extra": "0.21.0",
+    "lodash": "3.10.0",
+    "nan": "*",
+    "native-opencv": "3.0.0-b",
+    "node-dir": "0.1.8",
+    "single-line-log": "1.0.0"
+  },
+  "private": true
+}

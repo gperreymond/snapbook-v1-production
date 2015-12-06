@@ -1,0 +1,18 @@
+{
+    "apps": [
+        {
+            "name" : "queue.snapbook.io",
+            "script" : "server/queue.js",
+            "exec_mode" : "cluster_mode",
+            "instances" : 1,
+            "watch" : false,
+            "env": {
+                "NODE_ENV": "production"
+            },
+            "error_file" : "/dsi/logs/queue.snapbook.io.errors",
+            "out_file" : "/dsi/logs/queue.snapbook.io.logs",
+            "merge_logs" : true,
+            "log_date_format" : "YYYY-MM-DD HH:mm Z"
+        }
+    ]
+}
