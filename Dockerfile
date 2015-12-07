@@ -10,8 +10,8 @@ COPY ./ggv_modules/ggv-opencv /ggv-opencv
 
 # Install UBUNTU packages
 RUN apt-get update
-RUN apt-get install ghostscript
-RUN apt-get install imagemagick
+RUN apt-get install -y ghostscript
+RUN apt-get install -y imagemagick
 
 # Install GLOBAL dependencies
 RUN npm install -g pm2
