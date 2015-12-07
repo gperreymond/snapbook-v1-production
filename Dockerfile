@@ -9,7 +9,9 @@ COPY ./ggv_applications/api.snapbook.io /api.snapbook.io
 COPY ./ggv_modules/ggv-opencv /ggv-opencv
 
 # Install UBUNTU packages
-RUN apt-get install libmagick++-dev
+RUN apt-get update
+RUN apt-get install ghostscript
+RUN apt-get install imagemagick
 
 # Install GLOBAL dependencies
 RUN npm install -g pm2
