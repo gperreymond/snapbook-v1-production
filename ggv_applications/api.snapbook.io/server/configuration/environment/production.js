@@ -6,16 +6,16 @@ module.exports = {
 	server: {
 		https: false,
 		host: '0.0.0.0',
-		port: 80
+		port: 8080
 	},
 	server_compare: {
 		https: false,
 		host: '0.0.0.0',
-		port: 80
+		port: 8080
 	},
 	queue: {
 		hostname: 'queue.snapbook.io',
-		port: 80
+		port: 8080
 	},
 	// session
 	secrets: {
@@ -23,8 +23,8 @@ module.exports = {
 	},
 	// directories
 	rootDirs: {
-		applications: '/vagrant/applications',
-		modules: '/vagrant/git/ggv_modules'
+		applications: '/volumes/applications',
+		modules: '/volumes/modules'
 	},
 	upload: {
 		maxBytes: 5242880
