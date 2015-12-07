@@ -10,7 +10,7 @@ COPY ./ggv_modules/ggv-opencv /ggv-opencv
 
 # Install UBUNTU packages
 RUN apt-get update
-RUN apt-get install libmagick++-dev
+RUN apt-get install -y libmagick++-dev
 RUN apt-get install -y ghostscript
 RUN apt-get install -y imagemagick
 
