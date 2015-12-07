@@ -10,6 +10,7 @@ COPY ./ggv_modules/ggv-opencv /ggv-opencv
 
 # Install UBUNTU packages
 RUN apt-get update
+RUN apt-get install libmagick++-dev
 RUN apt-get install -y ghostscript
 RUN apt-get install -y imagemagick
 
@@ -18,12 +19,12 @@ RUN npm install -g pm2
 RUN npm install -g node-gyp
 
 # Install PROJECT dependencies
-WORKDIR /api.snapbook.io
-RUN npm install --production
+WORKDIR /ggv-opencv
+RUN npm install
 
 # Install PROJECT dependencies
-WORKDIR /ggv-opencv
-RUN npm install --production
+WORKDIR /api.snapbook.io
+RUN npm install
 
 # Set the current working directory to the new mapped folder.
 WORKDIR /api.snapbook.io
