@@ -10,7 +10,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # ImageMagick
 RUN apt-get update
 RUN apt-get install -y \
-    imagemagick 
+    imagemagick \
+    libmagick++-dev
 
 # Clean the cache created by package installations
 RUN \
