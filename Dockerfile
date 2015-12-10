@@ -27,7 +27,7 @@ COPY ./ggv_modules/ggv-opencv /app/node_modules/ggv-opencv
 # Install PROJECT dependencies
 WORKDIR /app/node_modules/ggv-opencv
 RUN npm install
-
+ 
 # Install PROJECT dependencies
 WORKDIR /app
 # RUN npm install
