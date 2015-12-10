@@ -30,7 +30,7 @@ RUN npm install
 
 # Set the current working directory to the new mapped folder.
 WORKDIR /app
-
+ 
 # Expose port
 EXPOSE 80
 
