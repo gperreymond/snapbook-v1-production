@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/*
 
+# Install global npm
+RUN npm install -g node-gyp
+
 # Add the current working folder as a mapped folder at /app
 COPY ./ggv_applications/api.snapbook.io /app
 WORKDIR /app
