@@ -29,7 +29,7 @@ WORKDIR /app/node_modules/ggv-opencv
 RUN npm install
 
 # Set the current working directory to the new mapped folder.
-WORKDIR /api.snapbook.io
+WORKDIR /app
 
 # Expose port
 EXPOSE 80
