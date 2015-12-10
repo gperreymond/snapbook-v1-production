@@ -51,8 +51,6 @@ exports = module.exports = internals.Patterns = function(server) {
 		
 	});
 	
-	self.configuration = server.methods.Configuration();
-	
 	// --- crud (create)
 	server.route({
 	    method: 'POST',

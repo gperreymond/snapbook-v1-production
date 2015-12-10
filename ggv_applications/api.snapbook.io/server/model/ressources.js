@@ -56,8 +56,6 @@ exports = module.exports = internals.Ressources = function(server) {
 		});
 
 		RessourceSchema.set('versionKey', false);
-		
-		self.configuration = server.methods.Configuration();
 	
 		// --- crud (create)
 		server.route({

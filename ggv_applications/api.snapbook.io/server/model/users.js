@@ -82,8 +82,6 @@ exports = module.exports = internals.Users = function(server) {
         return UserSchema;
         
 	});
-	
-	self.configuration = server.methods.Configuration();
     
     // --- auth/local
 	server.route({
@@ -147,7 +145,7 @@ internals.Users.prototype.auth_local_Handler = function(request, reply) {
 			errorEvent.dispatch(reply);
         } else {
 	        if (user.authenticate(request.payload.password)) {
-	            var signToken = jwt.sign({ _id: user._id, scope: user.scope }, self.configuration.secrets.session, { expiresInMinutes: 60*24 });
+	            var signToken = jwt.sign({ _id: user._id, scope: user.scope }, process.env.SNAPBOOK_KEY_SESSION, { expiresInMinutes: 60*24 });
 		    	if (err) {
 		    	    errorEvent = new ErrorEvent(418,'ERROR_TYPE_USERS_AUTH',err);
 			        errorEvent.dispatch(reply);

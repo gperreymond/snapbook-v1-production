@@ -38,9 +38,7 @@ exports = module.exports = internals.Activities = function(server) {
         
         ActivitySchema.set('versionKey', false);
         
-        self.configuration = server.methods.Configuration();
-	
-		// --- crud (create)
+        // --- crud (create)
 		server.route({
 		    method: 'POST',
 		    path: '/activities',
@@ -58,8 +56,6 @@ exports = module.exports = internals.Activities = function(server) {
         return ActivitySchema;
 		
 	});
-	
-	self.configuration = server.methods.Configuration();
 	
 };
 

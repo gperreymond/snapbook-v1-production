@@ -28,8 +28,6 @@ exports = module.exports = internals.Acras = function(server) {
         });
         
         AcraSchema.set('versionKey', false);
-        
-        self.configuration = server.methods.Configuration();
 	
 		// --- crud (create)
 		server.route({
@@ -44,8 +42,6 @@ exports = module.exports = internals.Acras = function(server) {
         return AcraSchema;
 		
 	});
-	
-	self.configuration = server.methods.Configuration();
 	
 };
 

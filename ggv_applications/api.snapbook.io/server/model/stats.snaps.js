@@ -30,8 +30,6 @@ exports = module.exports = internals.StatsSnaps = function(server) {
         });
         
         StatSnapSchema.set('versionKey', false);
-        
-        self.configuration = server.methods.Configuration();
 	
 		// --- crud (read all)
 		server.route({
@@ -45,8 +43,6 @@ exports = module.exports = internals.StatsSnaps = function(server) {
         return StatSnapSchema;
 		
 	});
-	
-	self.configuration = server.methods.Configuration();
 	
 };
 

@@ -16,9 +16,9 @@ var internals = {};
 // @constructor
 ////////////////////////
 
-exports = module.exports = internals.CVController = function(ggvmodulepath) {
+exports = module.exports = internals.CVController = function() {
     var self = this;
-    self.cv = require(ggvmodulepath+'/ggv-opencv');
+    self.cv = require('ggv-opencv');
     
     self.processes = 4;
     self.q = async.queue(function (task, callback) {

@@ -48,8 +48,7 @@ exports = module.exports = internals.Applications = function(server) {
 		
 	});
 	
-	self.configuration = server.methods.Configuration();
-	self.cv = require(self.configuration.rootDirs.modules+'/ggv-opencv');
+	self.cv = require('ggv-opencv');
 	
 	// --- crud (list all)
 	server.route({
@@ -105,7 +104,7 @@ exports = module.exports = internals.Applications = function(server) {
 		},
 	    config: {
 	        payload: {
-	        	maxBytes: self.configuration.upload.maxBytes,
+	        	maxBytes: 5242880,
 	            output: 'stream',
 	            parse: true,
 	            allow: 'multipart/form-data'

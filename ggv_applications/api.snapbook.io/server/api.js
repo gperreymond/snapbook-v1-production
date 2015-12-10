@@ -2,6 +2,16 @@
 //  package.dependencies
 // ---------------------------
 
+/** env
+SNAPBOOK_MONGO_URI
+SNAPBOOK_MONGO_USERNAME
+SNAPBOOK_MONGO_PASSWORD
+SNAPBOOK_HOST
+SNAPBOOK_PORT
+SNAPBOOK_KEY_SESSION
+SNAPBOOK_DIR_APPLICATIONS
+**/
+
 require('pmx').init({
 	http: true,
 	network: true,
@@ -17,82 +27,19 @@ var server = new Hapi.Server({
   	}
 });
 
-var _ = require("lodash");
 var path = require("path");
-var dir = require('node-dir');
-var async = require('async');
-
-var configuration = require('./configuration');
-server.method('Configuration', function() {
-	return require('./configuration');
-});
  
 // configure database
 
 var mongoose = require("mongoose");
-mongoose.connect(configuration.mongo.uri, configuration.mongo.options);
+mongoose.connect(process.env.SNAPBOOK_MONGO_URI);
 
 // configure server
 
 server.connection({ 
-	host: configuration.server.host,
-	port: configuration.server.port
+	host: process.env.SNAPBOOK_HOST,
+	port: process.env.SNAPBOOK_PORT
 });
-
-/**
-// configure socketIO
-var socket = require('socket.io-client')('http://localhost:8090');
-socket.on('connect', function() {
-    console.log('Sockets.Client.IO', 'Le serveur est connecté');
-});
-socket.on('disconnect', function() {
-    console.log('Sockets.Client.IO', 'Le serveur est déconnecté');
-});
-socket.on('return_compare', function (data) {
-    console.log('Sockets.Client.IO', 'on', 'return_compare');
-    socket.compare_result.push(data);
-    if ( socket.compare_result.length==socket.compare_patterns.length ) {
-        socket.reply(socket.compare_result);
-        delete socket.reply;  
-        delete socket.compare_result;
-        delete socket.compare_patterns;
-    } else {
-        
-    }
-});
-server.route({
-    method: 'POST',
-    path: '/io/compare',
-    handler: function(request, reply) {
-        dir.readFiles(request.payload.patterns_dirpath, {
-            match: /.jpg$/,
-            exclude: /^\./
-        }, function(err, content, next) {
-            if (err) {
-                console.log(err);
-                throw err;
-            }
-            next();
-        },
-        function(err, files) {
-            socket.reply = reply;
-            socket.compare_patterns = files;
-            socket.compare_result = [];
-            async.map(files, function(item, cb) {
-                var data = {
-                    snap_filepath: request.payload.snap_filepath,
-                    pattern_filepath: item
-                };
-                console.log('Sockets.Client.IO', 'emit', 'start_compare', data);
-                cb(null, true);
-                socket.emit('start_compare', data);
-            }, function(err, results) {
-                console.log('>>>', results);
-            });
-        });
-    }
-});
-**/
 
 // configure plugin Blipp
 
@@ -106,7 +53,7 @@ server.register(Blipp, function(err){
 server.register(require('hapi-auth-jwt'), function (err) {
 	if (err) console.log(err);
     server.auth.strategy('token', 'jwt', {
-        key: configuration.secrets.session,
+        key: process.env.SNAPBOOK_KEY_SESSION,
         validateFunc: validateToken
     });
 });
@@ -154,20 +101,20 @@ mongoose.model('StatsSnaps', server.methods.StatSnapSchema(), 'stats-snaps');
 var CVController = require("./controller/opencv.controller"); // OPENCV controller internal
 var WSLogsController = require("./controller/winston.controller"); // WINSTON controller internal
 
-var logger = new WSLogsController(configuration);
+var logger = new WSLogsController();
 server.method('ExecLogger', function(name, infos) {
 	logger[name](infos);
 });
 
 server.method('ExecCompare', function(source, application, next) {
-	var cv = new CVController(configuration.rootDirs.modules);
+	var cv = new CVController();
 	cv.compare(source, application, function(err,result) {
 		next(err,result);
 	});
 });
 
 server.method('ExecCompare02', function(source, application, next) {
-	var cv = new CVController(configuration.rootDirs.modules);
+	var cv = new CVController();
 	cv.compare02(source, application, function(err,result) {
 		next(err,result);
 	});
@@ -202,7 +149,7 @@ server.route({
     path: '/media/snaps/{param*}',
     handler: {
         directory: {
-            path: path.normalize(configuration.rootDirs.applications+'/uploads'),
+            path: path.normalize(process.env.SNAPBOOK_DIR_APPLICATIONS+'/uploads'),
             listing: true
         }
     }

@@ -10,6 +10,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # ImageMagick
 RUN apt-get update
 RUN apt-get install -y \
+    apt-utils \
+    krb5-kdc \
     libmagick++-dev
 
 # Clean the cache created by package installations
@@ -18,26 +20,19 @@ RUN \
 
 # Add the current working folder as a mapped folder at /app
 COPY ./ggv_applications/api.snapbook.io /app
+WORKDIR /app
+RUN npm install
+
+# Add the ggv opencv modul
 COPY ./ggv_modules/ggv-opencv /app/node_modules/ggv-opencv
-
-# Install GLOBAL dependencies
-# RUN npm install -g pm2
-# RUN npm install -g node-gyp
-
-# Install PROJECT dependencies
 WORKDIR /app/node_modules/ggv-opencv
 RUN npm install
- 
-# Install PROJECT dependencies
-WORKDIR /app
-# RUN npm install
 
 # Set the current working directory to the new mapped folder.
-# WORKDIR /api.snapbook.io
+WORKDIR /api.snapbook.io
 
 # Expose port
 EXPOSE 80
 
 # Running
-CMD node server/api.js
-# CMD pm2 start pm2.prod.api.json
+CMD npm start
