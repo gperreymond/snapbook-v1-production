@@ -11,8 +11,8 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
 RUN apt-get install -y \
     apt-utils \
-    krb5-kdc \
-    libmagick++-dev
+    libkrb5-dev \
+    graphicsmagick
 
 # Clean the cache created by package installations
 RUN \

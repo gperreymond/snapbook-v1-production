@@ -154,7 +154,7 @@ internals.Applications.prototype.compare_Handler = function(request, reply) {
 	           	var year = date.getUTCFullYear();
 	           	var month = ("0" + (date.getUTCMonth()+1)).slice(-2);
 				var day = ("0" + (date.getUTCDate())).slice(-2);
-				var dir_path = path.normalize(self.configuration.rootDirs.applications+'/uploads/'+year+'/'+month+'/'+day);
+				var dir_path = path.normalize(process.env.SNAPBOOK_DIR_APPLICATIONS+'/uploads/'+year+'/'+month+'/'+day);
 				fse.ensureDirSync(dir_path);
 	            results.snap_filepath = path.normalize(dir_path+'/'+name);
 	            var file = fs.createWriteStream(results.snap_filepath);
@@ -182,7 +182,7 @@ internals.Applications.prototype.compare_Handler = function(request, reply) {
 		    
 		    function(results,callback) {
 		    	var source = path.normalize(results.snap_filepath);
-		    	var application = path.normalize(self.configuration.rootDirs.applications+'/'+request.params.id+'/patterns');
+		    	var application = path.normalize(process.env.SNAPBOOK_DIR_APPLICATIONS+'/'+request.params.id+'/patterns');
 				server.methods.ExecCompare(source, application, function(err, results_compare) {
 					if ( err ) {
                 		errorEvent = new ErrorEvent(418,'ERROR_COMPARE',err);
