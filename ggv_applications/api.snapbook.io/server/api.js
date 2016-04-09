@@ -12,11 +12,7 @@ SNAPBOOK_KEY_SESSION
 SNAPBOOK_DIR_APPLICATIONS
 **/
 
-require('pmx').init({
-	http: true,
-	network: true,
-	ports: false
-});
+require('newrelic');
 
 var Hapi = require('hapi');
 var server = new Hapi.Server({

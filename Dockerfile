@@ -17,14 +17,15 @@ RUN apt-get update && apt-get install -y \
 RUN npm install -g node-gyp
 
 # Add the current working folder as a mapped folder at /app
+ADD ./newrelic.js /app
 COPY ./ggv_applications/api.snapbook.io /app
 WORKDIR /app
-RUN npm install
+RUN npm install --production
 
 # Add the ggv opencv module
 COPY ./ggv_modules/ggv-opencv /app/node_modules/ggv-opencv
 WORKDIR /app/node_modules/ggv-opencv
-RUN npm install \
+RUN npm install --production \
 && node-gyp configure \
 && node-gyp build
 
