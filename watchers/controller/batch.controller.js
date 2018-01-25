@@ -44,7 +44,7 @@ exports = module.exports = internals.BatchController = function() {
 internals.BatchController.prototype.start = function(callback) {
     var self = this;
 
-    var watcher_path_root = path.normalize(self.configuration.rootDirs.applications);
+    var watcher_path_root = self.configuration.rootDirs.applications;
     var watcher = chokidar.watch(watcher_path_root, {
         persistent: true,
         ignored: '*.txt',
@@ -73,11 +73,12 @@ internals.BatchController.prototype.start = function(callback) {
     self.cv = new CVController().cv;
     self.im = new IMController();
 
+    callback();
 };
 
 internals.BatchController.prototype.watcher_Handler = function(file) {
     var self = this;
-
+    file = path.resolve(file);
     var directories = path.dirname(file).split(path.sep);
     var max = directories.length-1;
 
@@ -121,7 +122,7 @@ internals.BatchController.prototype.watcher_Handler = function(file) {
 						stats.name = path.basename(results.filepath);
 						stats.md5 = md5(results.filepath);
 						stats.size = fstats.size;
-						stats.mime =  datas.mime;
+						stats.mime = datas.mime;
 						stats.date = new Date();
 						stats.width = datas.width;
 						stats.height = datas.height;
@@ -190,8 +191,8 @@ internals.BatchController.prototype.watcher_Handler = function(file) {
 
 		    // batch
 		    function(results, callback) {
-                console.log('file move', path.normalize(file), path.normalize(results.pattern.filepath));
-                fse.move( path.normalize(file), path.normalize(results.pattern.filepath), {clobber: true}, function(err) {
+                console.log('file move', file, results.pattern.filepath);
+                fse.move( file, results.pattern.filepath, {clobber: true}, function(err) {
                     if (err) {
                         callback(err,null);
                     } else {

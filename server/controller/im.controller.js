@@ -25,7 +25,7 @@ exports = module.exports = internals.IMController = function() {
 internals.IMController.prototype.analyse = function(filepath, callback) {
     gm(filepath)
     .identify(function (err, result) {
-      if (!err) return callback(err, null);
+      if (err) return callback(err, null);
       result.mime = mime.lookup(filepath);
       callback(null, result);
     });

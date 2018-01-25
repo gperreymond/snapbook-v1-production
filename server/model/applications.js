@@ -48,7 +48,7 @@ exports = module.exports = internals.Applications = function(server) {
 		
 	});
 	
-	self.cv = require('ggv-opencv');
+	self.cv = require('nova-opencv');
 	
 	// --- crud (list all)
 	server.route({

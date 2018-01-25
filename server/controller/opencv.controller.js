@@ -18,7 +18,7 @@ var internals = {};
 
 exports = module.exports = internals.CVController = function() {
     var self = this;
-    self.cv = require('ggv-opencv');
+    self.cv = require('nova-opencv');
     
     self.processes = 4;
     self.q = async.queue(function (task, callback) {
