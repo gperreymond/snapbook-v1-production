@@ -18,16 +18,9 @@ RUN npm install -g node-gyp@3.6.2
 
 # Add the current working folder as a mapped folder at /app
 RUN mkdir /app
-ADD ./ggv_applications/api.snapbook.io /app
+ADD . /app
 WORKDIR /app
 RUN npm install --production
-
-# Add the ggv opencv module
-ADD ./ggv_modules/ggv-opencv /app/node_modules/ggv-opencv
-WORKDIR /app/node_modules/ggv-opencv
-RUN npm install --production \
-&& node-gyp configure \
-&& node-gyp build
 
 # Set the current working directory to the new mapped folder.
 WORKDIR /app
