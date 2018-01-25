@@ -12,8 +12,6 @@ SNAPBOOK_KEY_SESSION
 SNAPBOOK_DIR_APPLICATIONS
 **/
 
-require('newrelic');
-
 var Hapi = require('hapi');
 var server = new Hapi.Server({
   	connections: {
@@ -24,7 +22,7 @@ var server = new Hapi.Server({
 });
 
 var path = require("path");
- 
+
 // configure database
 
 var mongoose = require("mongoose");
@@ -32,7 +30,7 @@ mongoose.connect(process.env.SNAPBOOK_MONGO_URI);
 
 // configure server
 
-server.connection({ 
+server.connection({
 	host: process.env.SNAPBOOK_HOST,
 	port: process.env.SNAPBOOK_PORT
 });
@@ -41,7 +39,7 @@ server.connection({
 
 var Blipp = require('blipp');
 server.register(Blipp, function(err){
-	
+
 });
 
 // configure plugin jwt
@@ -153,6 +151,6 @@ server.route({
 
 // start server
 
-server.start(function () { 
+server.start(function () {
 	console.log('Server running at:', server.info.uri);
 });

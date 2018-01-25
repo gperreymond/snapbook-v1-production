@@ -1,6 +1,16 @@
-var configuration = require('../../server/configuration');
+// var configuration = require('../../server/configuration');
 var CVController = require('../../server/controller/opencv.controller');
 var IMController = require('../../server/controller/im.controller');
+
+var configuration = {
+  mongo: {
+    uri: process.env.SNAPBOOK_MONGO_URI,
+    options: {}
+  },
+  rootDirs: {
+    applications: process.env.SNAPBOOK_DIR_APPLICATIONS
+  }
+}
 
 var chokidar = require('chokidar');
 var fse = require('fs-extra');
@@ -27,13 +37,13 @@ var internals = {};
 
 exports = module.exports = internals.BatchController = function() {
     var self = this;
-    
+
     self.configuration = configuration;
 };
 
 internals.BatchController.prototype.start = function(callback) {
     var self = this;
-    
+
     var watcher_path_root = path.normalize(self.configuration.rootDirs.applications);
     var watcher = chokidar.watch(watcher_path_root, {
         persistent: true,
@@ -48,7 +58,7 @@ internals.BatchController.prototype.start = function(callback) {
         ignorePermissionErrors: false,
         atomic: true
     });
-    
+
     watcher
     .on('add', function(path) { self.watcher_Handler(path) })
     .on('change', function(path) { console.log('File', path, 'has been changed'); })
@@ -59,24 +69,24 @@ internals.BatchController.prototype.start = function(callback) {
     .on('error', function(error) { console.log('Error happened', error); })
     .on('ready', function() { console.log('Initial scan complete. Ready for changes.'); });
     // .on('raw', function(event, path, details) { log('Raw event info:', event, path, details); })
-    
-    self.cv = new CVController(configuration.rootDirs.modules).cv;
+
+    self.cv = new CVController().cv;
     self.im = new IMController();
 
 };
 
 internals.BatchController.prototype.watcher_Handler = function(file) {
     var self = this;
-    
+
     var directories = path.dirname(file).split(path.sep);
     var max = directories.length-1;
 
     if ( directories[max]=='uploads' && fse.lstatSync(file).isFile()) {
-        
+
         console.log('File', file, 'has been added');
-        
+
         async.waterfall([
-            
+
             // initialize
     		function(callback) {
     		    var results = {};
@@ -85,7 +95,7 @@ internals.BatchController.prototype.watcher_Handler = function(file) {
     		    results.filename = path.basename(file);
     			callback(null,results);
     		},
-    		
+
     		// get application
             function(results, callback) {
                 console.log(results.filepath, 'find application ['+results.application+']');
@@ -99,7 +109,7 @@ internals.BatchController.prototype.watcher_Handler = function(file) {
                     }
                 });
             },
-    		
+
     		// get files stats
             function(results, callback) {
             	self.im.analyse(results.filepath, function(err, datas) {
@@ -121,14 +131,14 @@ internals.BatchController.prototype.watcher_Handler = function(file) {
 					}
 				});
             },
-		    
+
 		    // insert or update pattern in mongodb ?
             function(results, callback) {
                 Patterns.findOne({ name : results.filename, application: results.application._id }, function(err,pattern) {
 	        		if (err) {
 				    	callback(err,null);
 					} else {
-						if ( _.isNull(pattern) ) { 
+						if ( _.isNull(pattern) ) {
 							pattern = new Patterns(pattern);
 							pattern.application = results.application._id;
 							pattern.filepath = path.normalize(configuration.rootDirs.applications+'/'+pattern.application+'/patterns/'+pattern._id+'.jpg');
@@ -159,7 +169,7 @@ internals.BatchController.prototype.watcher_Handler = function(file) {
 					}
         		});
             },
-		    
+
 		    // update application in mongodb ?
             function(results, callback) {
                 var pattern_allready_exists = _.findIndex(results.application.patterns, results.pattern._id)!=-1;
@@ -177,7 +187,7 @@ internals.BatchController.prototype.watcher_Handler = function(file) {
                     });
                 }
             },
-		    
+
 		    // batch
 		    function(results, callback) {
                 console.log('file move', path.normalize(file), path.normalize(results.pattern.filepath));
@@ -196,32 +206,32 @@ internals.BatchController.prototype.watcher_Handler = function(file) {
                     }
                 });
 		    },
-		
+
     	], function(err, results) {
     	    if (err) {
     			console.log('ERROR', 'watcher_Handler', err);
     	    }
     	});
-    	
+
     }
-    
+
 };
 
 internals.BatchController.prototype.batch_Handler = function(params, method, callback_batch) {
     var self = this;
-    
+
     var maxWidth = 512;
     var maxHeight = 512;
 
     async.waterfall([
-        
+
         // initialize
         function(callback) {
             var results = {};
             results.method = 'AKAZE';
             callback(null, results);
         },
-        
+
         // 1. load image
         function(results, callback) {
             console.log('1. load image', params.filepath);
@@ -234,7 +244,7 @@ internals.BatchController.prototype.batch_Handler = function(params, method, cal
                 }
             });
         },
-        
+
         // 2. optimize size
         function(results, callback) {
             console.log('2. optimize size', params.filepath);
@@ -260,7 +270,7 @@ internals.BatchController.prototype.batch_Handler = function(params, method, cal
                 });
             });
         },
-        
+
         // 3. compute AKAZE
         function(results, callback) {
             console.log('3. compute', params.filepath, results.method, results.imview.width(), results.imview.height());
@@ -273,30 +283,30 @@ internals.BatchController.prototype.batch_Handler = function(params, method, cal
                     var file_kpts = path.normalize(destination_kpts);
                     fse.ensureFileSync(file_kpts);
                     fse.writeFileSync(file_kpts, results.imview.keypoints());
-                    
+
                     var destination_dcts = configuration.rootDirs.applications+'/'+params.pattern.application+'/patterns/descriptors/'+params.pattern._id+'-dcts.yml';
                     var file_dcts = path.normalize(destination_dcts);
                     fse.ensureFileSync(file_dcts);
                     fse.writeFileSync(file_dcts, results.imview.descriptors());
-                    
+
                     imview_compute.asPngStream(function(err, data) {
                         if (err) {
                             callback(err,null);
                         } else {
-                            
+
                             var destination_cpte = configuration.rootDirs.applications+'/'+params.pattern.application+'/patterns/computes/'+params.pattern._id+'-cpte.png';
                             var file_cpte = path.normalize(destination_cpte);
                             fse.ensureFileSync(file_cpte);
                             fse.writeFileSync(file_cpte, new Buffer(data));
-                            
+
                             callback(null, results);
                         }
                     });
-                    
+
                 }
             });
         },
-        
+
     ],
     function(err, results) {
         console.log(err,results);
@@ -313,7 +323,7 @@ function getOptimalSizeImage(imgview, maxWidth, maxHeight, callback) {
     var imgHeight;
     var width;
     var height;
-    
+
     if ( imgview.width() > maxWidth || imgview.height() > maxHeight ) {
         imgWidth = imgview.width();
         imgHeight = imgview.height();
@@ -334,5 +344,5 @@ function getOptimalSizeImage(imgview, maxWidth, maxHeight, callback) {
         height = imgview.height();
     }
     callback(width, height);
-    
+
 };
